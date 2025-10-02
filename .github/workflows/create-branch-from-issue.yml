@@ -1,0 +1,38 @@
+name: Create branch from issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Create branch from issue
+        uses: peter-evans/issue-branch@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch_name: "chistock-#${{ github.event.issue.number }}"
+          auto_close_issue: true
+          open_draft_pr: true
+          copy_issue_labels_to_pr: true
+          copy_issue_assignee_to_pr: true
+          label_branches: |
+            🐛 Bug=bugfix/
+            🩹 Simple Fix=bugfix/
+            🚨 HOTFIX=hotfix/
+            👷 CI=env/
+            ⚙️ Setting=env/
+            💄 Design=feature/
+            ✨ Feature=feature/
+            ♻️ Refactor=feature/
+            ✅ Test=feature/
+            📝 Document=docs/
